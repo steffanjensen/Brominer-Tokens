@@ -3,9 +3,12 @@ var DappTokenSale = artifacts.require("./DappTokenSale.sol");
 
 contract('DappTokenSale', function(accounts)
  {
- 	var tokenSaleInstance;
+ 	var tokenInstance;
+  var tokenSaleInstance;
+  var admin = accounts[0];
  	var buyer = accounts[1];
  	var tokenPrice = 1000000000000000;
+  var tokensAvailable = 750000;
   var numberOfTokens;
   var tokenSaleInstance;
 
@@ -25,7 +28,16 @@ contract('DappTokenSale', function(accounts)
  	});
 
  	it('facilitates token buying',function(){
-    return DappTokenSale.deployed().then(function(instance) {
+    return DappToken.deployed().then(function(instance) {
+//grab token instance first
+      tokenInstance = instance;
+      return DappTokenSale.deployed();
+    }).then(function(instance){
+      // Then grab token sale instance
+      tokenSaleInstance = instance;
+      // Provision 75% of all tokens to token sale
+      return tokenInstance.transfer(tokenSaleInstance.address, tokensAvailable, {from: admin })
+    }).then(function(receipt){
     	numberOfTokens = 10;
       return tokenSaleInstance.buyTokens(numberOfTokens, { from: buyer, value: numberOfTokens * tokenPrice })
     }).then(function(receipt) {
@@ -37,9 +49,12 @@ contract('DappTokenSale', function(accounts)
  	}).then(function(amount){
  		assert.equal(amount.toNumber(), numberOfTokens, 'increments the number of tokens sold');
   	// Try to buy tokens different from the wther value
-    return tokenSaleInstance.buyTokens(numberOfTokens, { from: buyer, value: 1 });
+   // return tokenSaleInstance.buyTokens(numberOfTokens, { from: buyer, value: 1 });
+  //  }).then(assert.fail).catch(function(error){
+  //    assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
+      return tokenSaleInstance.buyTokens(800000, { from: buyer, value: numberOfTokens * tokenPrice })
     }).then(assert.fail).catch(function(error){
-      assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
+      assert(error.message.indexOf('revert') >= 0, 'cannot purchase more tokens avilable');
 	});
     });
   });
