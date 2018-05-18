@@ -49,9 +49,9 @@ contract('DappTokenSale', function(accounts)
  	}).then(function(amount){
  		assert.equal(amount.toNumber(), numberOfTokens, 'increments the number of tokens sold');
   	// Try to buy tokens different from the wther value
-   // return tokenSaleInstance.buyTokens(numberOfTokens, { from: buyer, value: 1 });
-  //  }).then(assert.fail).catch(function(error){
-  //    assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
+    return tokenSaleInstance.buyTokens(numberOfTokens, { from: buyer, value: 1 });
+    }).then(assert.fail).catch(function(error){
+      assert(error.message.indexOf('revert') >= 0, 'msg.value must equal number of tokens in wei');
       return tokenSaleInstance.buyTokens(800000, { from: buyer, value: numberOfTokens * tokenPrice })
     }).then(assert.fail).catch(function(error){
       assert(error.message.indexOf('revert') >= 0, 'cannot purchase more tokens avilable');

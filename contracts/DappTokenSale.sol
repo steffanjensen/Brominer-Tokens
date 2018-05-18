@@ -22,8 +22,7 @@ contract DappTokenSale {
 	}
 
 	function buyTokens(uint256 _numberOfTokens) public payable {
-		//require(msg.value == multiply(_numberOfTokens, tokenPrice));
-		// Require that the contract has enough tokenSold
+		require(msg.value == multiply(_numberOfTokens, tokenPrice));
 		require(tokenContract.balanceOf(this) >= _numberOfTokens);
 		// Require that transfer is successful
 		// Keep track of tokenSold
