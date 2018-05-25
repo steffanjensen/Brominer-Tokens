@@ -30,4 +30,11 @@ contract DappTokenSale {
 		// Trigger Sell Event
 		Sell(msg.sender, _numberOfTokens);
 	}
+
+	// Ending Token Sale
+	function endSale() public {
+		// Require admin
+		// Transfer remaining dapp tokens to admin
+		// Destroy Contract
+	}
 }
